@@ -6,16 +6,6 @@ export default function InterviewerListItem(props) {
 
   const itemClass = classNames('interviewers__item',{"--selected":props.selected});
 
-
-  // const formatSpots = (spot) => {
-  //   if (spot === 0 ) {
-  //     return "no spots remaining";
-  //   } else if (spot === 1) {
-  //     return "1 spot remaining";
-  //   } else {
-  //     return `${spot} spots remaining`
-  //   }
-  // };
   return (
     <li className={itemClass.split(' ').join('')} onClick={() => props.setInterviewer(props.id)}>
   <img
