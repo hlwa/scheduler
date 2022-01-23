@@ -10,6 +10,7 @@ export default function InterviewerListItem(props) {
     <li className={itemClass.split(' ').join('')} onClick={props.setInterviewer}>
   <img
     className="interviewers__item-image"
+    key ={props.id}
     src={props.avatar}
     alt={props.name}
   />
