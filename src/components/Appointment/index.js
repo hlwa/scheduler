@@ -14,7 +14,7 @@ export default function Appointment(props) {
   const initial = props.interview ? SHOW : EMPTY;
   const { mode, transition, back } = useVisualMode(initial);
 
-
+//
   const format = (time) => time ? <Header time = {props.time}/> : `No Appointments`;
   const EmptyMode = (mode) => mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />;
   const ShowMode = (mode) => mode === SHOW && (
