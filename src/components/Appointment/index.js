@@ -13,8 +13,15 @@ export default function Appointment(props) {
   const CREATE = "CREATE";
   const initial = props.interview ? SHOW : EMPTY;
   const { mode, transition, back } = useVisualMode(initial);
+  const save = (name, interviewer) =>{
+    const interview = {
+      student: name,
+      interviewer
+    };
 
-//
+    props.bookInterview (props.id, interview,transition(SHOW));////--------->Pessimistic
+    //transition(SHOW)------>Optimistic
+  }
   const format = (time) => time ? <Header time = {props.time}/> : `No Appointments`;
   const EmptyMode = (mode) => mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />;
   const ShowMode = (mode) => mode === SHOW && (
@@ -27,7 +34,7 @@ export default function Appointment(props) {
     <Form
       interviewers={props.interviewers}
       onCancel={() => back(EMPTY)}
-      onSave={() => transition(SHOW)}
+      onSave={save}
     />
   );
 
