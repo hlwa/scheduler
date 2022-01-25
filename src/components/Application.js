@@ -27,14 +27,13 @@ export default function Application(props) {
       [id]: appointment
     };
 
-
     //setAppointments(appointments)------>Optimistic
     axios.put(`/api/appointments/${id}`, {interview})
     .then(setAppointments(appointments))//--------->Pessimistic
     .then(transition)//--------->Pessimistic
     .catch(error => {
       console.log(error);
-    });;
+    });
   };
   
  
