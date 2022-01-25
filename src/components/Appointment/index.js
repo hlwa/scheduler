@@ -4,6 +4,8 @@ import Show from './Show';
 import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
+import Confirm from "./Confirm";
+import Error from "./Error";
 import useVisualMode from "hooks/useVisualMode";
 
 import "./styles.scss";
@@ -13,24 +15,33 @@ export default function Appointment(props) {
   const SHOW = "SHOW";
   const CREATE = "CREATE";
   const SAVING = 'SAVING';
+  const DELETE = 'DELETE';
+  const CONFIRM = 'CONFIRM';
   const initial = props.interview ? SHOW : EMPTY;
   const { mode, transition, back } = useVisualMode(initial);
   const StatusMode = (mode) => mode === SAVING && <Status message={'Saving'} />;
-  
+  const DeleteMode = (mode) => mode === DELETE && <Status message={'Deleting'} />;
+  const ConfirmMOde = (mode) => mode === CONFIRM && <Confirm message={'Are you sure to delete?'}
+  onConfirm={deleteSth} 
+  onCancel={() => back(SHOW)}/>
+
   const format = (time) => time ? <Header time = {props.time}/> : `No Appointments`;
   const EmptyMode = (mode) => mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />;
 
-  const ShowMode = (mode) => mode === SHOW && (
+
+  const deleteSth= () => {
+    transition(DELETE);
+
+    props.cancelInterview(props.id)
+    .then(()=>transition(EMPTY))
+
+  };
+
+  const ShowMode = (mode) => (mode === SHOW) && (
     <Show
       student={props.interview.student}
       interviewer={props.interview.interviewer}
-    />
-  );
-  const CreateMode = (mode) => mode === CREATE && (
-    <Form
-      interviewers={props.interviewers}
-      onCancel={() => back(EMPTY)}
-      onSave={save}
+      onDelete={() => transition(CONFIRM)}
     />
   );
 
@@ -39,10 +50,23 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
+
     transition(SAVING);
-    props.bookInterview (props.id, interview, transition(SHOW));////--------->Pessimistic
-    // transition(SHOW)//------>Optimistic
+
+  props.bookInterview (props.id, interview)
+    .then(() => transition(SHOW))
   }
+
+
+  const CreateMode = (mode) => mode === CREATE && (
+    <Form
+      interviewers={props.interviewers}
+      onCancel={() => back(EMPTY)}
+      onSave={save}
+    />
+  );
+
+
 
   return (
     <article className="appointment">
@@ -51,5 +75,7 @@ export default function Appointment(props) {
       {ShowMode(mode)}
       {CreateMode(mode)}
       {StatusMode(mode)}
+      {DeleteMode(mode)}
+      {ConfirmMOde(mode)}
       </article>
   )};
