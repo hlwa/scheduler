@@ -3,6 +3,7 @@ import InterviewerList from "components/InterviewerList";
 import Button from "components/Button";
 
 export default function Form(props) {
+  console.log(props);
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
   const reset = () => {
@@ -25,6 +26,7 @@ export default function Form(props) {
           name="name"
           type="text"
           placeholder="Enter Student Name"
+          value={student}
           onChange={(event) => setStudent(event.target.value)}
         />
       </form>
