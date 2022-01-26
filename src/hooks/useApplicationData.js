@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 
 
-export default function useApplicationData(props) {
+export default function useApplicationData() {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
     appointments: {},
     interviewers:{},
   });
+
   const setDay = day => setState({ ...state, day });
+  // const setSpots = spots => setState({ ...state, spots });
   const setAppointments = appointments => setState({...state, appointments});
 
   const bookInterview = (id, interview) => {
@@ -22,9 +24,11 @@ export default function useApplicationData(props) {
       [id]: appointment
     };
 
-    //setAppointments(appointments)------>Optimistic
+    // console.log('days',state.days);
+    
     return axios.put(`/api/appointments/${id}`, {interview})
-    .then(setAppointments(appointments))//--------->Pessimistic
+    .then(setAppointments(appointments))
+    .then(console.log(state.days[appointment.id].spots))
   };
 
   const cancelInterview = (id) => {
@@ -36,6 +40,7 @@ export default function useApplicationData(props) {
     //setAppointments(appointments)------>Optimistic
     return axios.delete(`/api/appointments/${id}`)
     .then(setAppointments(appointments))//--------->Pessimistic
+    // .then(setSpots(state.days[appointment.id].spots))
   };
   useEffect(() =>{
     Promise.all([
@@ -51,7 +56,6 @@ export default function useApplicationData(props) {
       }));
     });
   },[]);
-
   return {
     state,
     setDay,
