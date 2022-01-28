@@ -17,7 +17,6 @@ export default function useApplicationData() {
 
     for (const id of day.appointments) {
       const appointment = appointments[id];
-      console.log(appointment.interview);
       if(!appointment.interview) {
         spots ++
       }
@@ -28,7 +27,6 @@ export default function useApplicationData() {
   const updateSpots = (state,appointments,id) => {
    const dayObj = state.days.find(day => day.name === state.day);
    const spots =getSpotsForDay(dayObj,appointments);
-  console.log(spots);
    return  state.days.map(d=>d.name === state.day ? {...dayObj, spots} : d);
   };
 

@@ -19,7 +19,7 @@ export default function DayListItem(props) {
 
   // console.log(dayClass.split(' ').join(''));
   return (
-    <li onClick={() => props.setDay(props.name)} className = {dayClass.split(' ').join('')}>
+    <li data-testid="day" onClick={() => props.setDay(props.name)} className = {dayClass.split(' ').join('')}>
       <h2 className="text--regular">{props.name}</h2>
       <h3 className="text--light">{formatSpots(props.spots)}</h3>
     </li>
