@@ -11,9 +11,28 @@ export default function useApplicationData() {
   });
 
   const setDay = day => setState({ ...state, day });
-  // const setSpots = spots => setState({ ...state, spots });
-  const setAppointments = appointments => setState({...state, appointments});
+  
+  const getSpotsForDay = (day,appointments) =>{
+    let spots = 0;
 
+    for (const id of day.appointments) {
+      const appointment = appointments[id];
+      console.log(appointment.interview);
+      if(!appointment.interview) {
+        spots ++
+      }
+    }
+    return spots;
+  };
+
+  const updateSpots = (state,appointments,id) => {
+   const dayObj = state.days.find(day => day.name === state.day);
+   const spots =getSpotsForDay(dayObj,appointments);
+  console.log(spots);
+   return  state.days.map(d=>d.name === state.day ? {...dayObj, spots} : d);
+  };
+
+  
   const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
@@ -24,24 +43,35 @@ export default function useApplicationData() {
       [id]: appointment
     };
 
-    // console.log('days',state.days);
+    const days = updateSpots(state,appointments,id);
     
     return axios.put(`/api/appointments/${id}`, {interview})
-    .then(setAppointments(appointments))
-    .then(console.log(state.days[appointment.id].spots))
+                .then(setState({...state,appointments,days}))
   };
 
   const cancelInterview = (id) => {
- 
-    const appointments = state.appointments;
-
-    appointments.id = null;
-
-    //setAppointments(appointments)------>Optimistic
-    return axios.delete(`/api/appointments/${id}`)
-    .then(setAppointments(appointments))//--------->Pessimistic
-    // .then(setSpots(state.days[appointment.id].spots))
+    const appointment = {
+      ...state.appointments[id],
+      interview: null,
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    const foundDay = state.days.find((day) => day.appointments.includes(id));
+    const days = state.days.map((day, index) => {
+      if (day.name === foundDay.name) {
+        return { ...day, spots: day.spots + 1 };
+      } else {
+        return day;
+      }
+    });
+    return axios.delete(`/api/appointments/${id}`, appointment).then(() => {
+      setState({ ...state, appointments, days });
+    });
   };
+
+
   useEffect(() =>{
     Promise.all([
       axios.get('/api/days'),
@@ -56,6 +86,7 @@ export default function useApplicationData() {
       }));
     });
   },[]);
+
   return {
     state,
     setDay,

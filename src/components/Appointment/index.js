@@ -11,6 +11,7 @@ import useVisualMode from "hooks/useVisualMode";
 import "./styles.scss";
 
 export default function Appointment(props) {
+  // console.log('PROPS FROM APPOINTMENT COMPONENT', props)
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
   const CREATE = "CREATE";
@@ -39,6 +40,8 @@ export default function Appointment(props) {
     .catch((error)=>transition(ERROR_DELETE, true));
   };
 
+
+
   const ShowMode = (mode) => (mode === SHOW) && (
     <Show
       student={props.interview.student}
@@ -53,12 +56,13 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
-
     transition(SAVING);
 
   props.bookInterview (props.id, interview)
+    // .then(console.log(props))
+
     .then(() => transition(SHOW))
-    .catch((error)=>transition(ERROR_SAVE, true))
+    .catch(()=>transition(ERROR_SAVE, true))
   };
 
 
